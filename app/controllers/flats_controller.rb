@@ -1,8 +1,13 @@
 class FlatsController < ApplicationController
-  before_action :set_flat, only: [:show, :edit, :update, :destroy]
+  before_action :find_flat, only: [:show, :edit, :update, :destroy]
 
   def index
-    @flats = Flat.all
+    if params[:query].present?
+      @query = params[:query]
+      @flats = Flat.where("name LIKE ?","%#{params[:query]}%")
+    else
+      @flats = Flat.all
+    end
   end
 
   def show; end
@@ -14,7 +19,7 @@ class FlatsController < ApplicationController
   def create
     @flat = Flat.new(flat_params)
     if @flat.save
-      redirect_to flats_path
+      redirect_to flat_path(@flat)
     else
       render :new
     end
@@ -32,16 +37,18 @@ class FlatsController < ApplicationController
 
   def destroy
     @flat.destroy
-    redirect_to flats_path
+  end
+
+  def search
   end
 
   private
 
-  def flat_params
-    params.require(:flat).permit(:name, :description, :address, :price_per_night, :number_of_guests)
+  def find_flat
+    @flat = Flat.find(params[:id])
   end
 
-  def set_flat
-    @flat = Flat.find(params[:id])
+  def flat_params
+    params.require(:flat).permit(:name, :address, :description, :price_per_night, :number_of_guests)
   end
 end

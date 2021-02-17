@@ -1,0 +1,11 @@
+<div class="container">
+  <div>
+  <%= render 'navbar_wagon_without_login' %>
+  </div>
+</div>
+
+<h3>Search Result</h3>
+
+    <% @results.each do |result| %>
+        <%= result.name %><br>
+    <% end %>
